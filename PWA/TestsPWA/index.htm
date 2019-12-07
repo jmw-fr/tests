@@ -1,0 +1,15 @@
+<html>
+
+<body>
+    <script>
+        navigator.serviceWorker.register('servicework.js', {
+            scope: './'
+        }).then(function (sw) {
+            console.log("Registered!");
+        }).catch(function (err) {
+            console.error("Error", err);
+        });
+    </script>
+</body>>
+
+</html>
