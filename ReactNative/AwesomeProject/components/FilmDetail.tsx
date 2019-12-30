@@ -1,11 +1,14 @@
 // Components/FilmDetail.js
 
-import React from 'react'
-import { StyleSheet, View, Text, ActivityIndicator, ScrollView, Image } from 'react-native';
+import React from "react";
+import moment from "moment";
+import numeral from "numeral";
+import { StyleSheet, View, Text, ActivityIndicator, ScrollView, Image, TouchableOpacity } from "react-native";
 import { NavigationStackProp } from "react-navigation-stack";
+import { connect } from "react-redux";
 import { IFilm, getFilmDetailFromApi, getImageFromApi } from '../api/TMDBApi';
-import moment from 'moment';
-import numeral from 'numeral';
+import { IFavoriteState, IToggleFavoriteAction, TOGGLE_FAVORITE } from "../store/reducers/favoriteTypes";
+import { Dispatch } from "redux";
 
 interface INavigationParameters {
     idFilm: number;
@@ -13,6 +16,8 @@ interface INavigationParameters {
 
 interface IProps {
     navigation: NavigationStackProp<INavigationParameters>;
+    dispatch: Dispatch;
+    favoritesFilm: IFilm[];
 };
 
 interface IState {
@@ -40,6 +45,16 @@ class FilmDetail extends React.Component<IProps, IState> {
         }
     }
 
+    private _toggleFavorite() {
+        if (this.state.film) {
+            const action: IToggleFavoriteAction = {
+                type: TOGGLE_FAVORITE,
+                value: this.state.film,
+            };
+            this.props.dispatch(action);
+        }
+    }
+
     private _displayFilm() {
         const { film } = this.state;
 
@@ -51,6 +66,11 @@ class FilmDetail extends React.Component<IProps, IState> {
                         source={{ uri: getImageFromApi(film.backdrop_path) }}
                     />
                     <Text style={styles.title_text}>{film.title}</Text>
+                    <TouchableOpacity
+                        style={styles.favorite_container}
+                        onPress={() => this._toggleFavorite()}>
+                        {this._displayFavoriteImage()}
+                    </TouchableOpacity>
                     <Text style={styles.description_text}>{film.overview}</Text>
                     <Text style={styles.default_text}>Sorti le {moment(new Date(film.release_date)).format('DD/MM/YYYY')}</Text>
                     <Text style={styles.default_text}>Note : {film.vote_average} / 10</Text>
@@ -69,6 +89,20 @@ class FilmDetail extends React.Component<IProps, IState> {
         }
     }
 
+    _displayFavoriteImage() {
+        var sourceImage = require('../images/ic_favorite_border.png')
+        if (this.props.favoritesFilm.findIndex(item => item.id === this.state.film?.id) !== -1) {
+          // Film dans nos favoris
+          sourceImage = require('../images/ic_favorite.png')
+        }
+        return (
+          <Image
+            style={styles.favorite_image}
+            source={sourceImage}
+          />
+        )
+    }
+
     public componentDidMount() {
         getFilmDetailFromApi(this.props.navigation.state.params?.idFilm).then(data => {
             this.setState({
@@ -78,8 +112,14 @@ class FilmDetail extends React.Component<IProps, IState> {
         });
     }
 
+    componentDidUpdate() {
+        console.log("componentDidUpdate : ")
+        console.log(this.props.favoritesFilm)
+    }
+
     public render() {
-        console.log("Component FilmDetail rendu")
+        console.log("Component FilmDetail rendu");
+        console.log(this.props);
 
         return (
             <View style={styles.main_container}>
@@ -132,7 +172,20 @@ const styles = StyleSheet.create({
         marginLeft: 5,
         marginRight: 5,
         marginTop: 5,
+    },
+    favorite_container: {
+        alignItems: 'center', // Alignement des components enfants sur l'axe secondaire, X ici
+    },
+    favorite_image: {
+        width: 40,
+        height: 40
     }
 })
 
-export default FilmDetail
+const mapStateToProps = (state: IFavoriteState) => {
+    return {
+        favoritesFilm: state.favoritesFilm
+    };
+};
+
+export default connect(mapStateToProps)(FilmDetail);

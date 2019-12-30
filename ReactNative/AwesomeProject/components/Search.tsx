@@ -3,6 +3,8 @@ import { StyleSheet, View, TextInput, Button, FlatList, ActivityIndicator } from
 import FilmItem from "./FilmItem";
 import { getFilmsFromApiWithSearchedText, IFilm } from '../api/TMDBApi';
 import { NavigationStackProp } from 'react-navigation-stack';
+import { IFavoriteState } from "../store/reducers/favoriteTypes";
+import { connect } from "react-redux";
 
 interface IState {
     films: IFilm[];
@@ -11,9 +13,10 @@ interface IState {
 
 type Props = {
     navigation: NavigationStackProp<void>;
+    favoritesFilm: IFilm[];
 };
 
-export default class Search extends React.Component<Props, IState> {
+class Search extends React.Component<Props, IState> {
 
     constructor(props: Props) {
         super(props);
@@ -77,6 +80,10 @@ export default class Search extends React.Component<Props, IState> {
         }
     }
 
+    private _isFavorite(film: IFilm): boolean {
+        return this.props.favoritesFilm.findIndex(item => item.id === film?.id) >= 0;
+    }
+
     render() {
         console.log("RENDER");
         console.log(this.props);
@@ -92,7 +99,8 @@ export default class Search extends React.Component<Props, IState> {
                 <FlatList
                     data={this.state.films}
                     keyExtractor={(item: any) => item.id.toString()}
-                    renderItem={({ item }) => <FilmItem film={item} displayDetailForFilm={this._displayDetailForFilm} />}
+                    renderItem={({ item }) => <FilmItem film={item} displayDetailForFilm={this._displayDetailForFilm} isFavorite={this._isFavorite(item)} />}
+                    extraData={this.props.favoritesFilm}
                     onEndReachedThreshold={0.5}
                     onEndReached={() => {
                         if (this.page < this.totalPages) { // On vérifie qu'on n'a pas atteint la fin de la pagination (totalPages) avant de charger plus d'éléments
@@ -128,3 +136,12 @@ const styles = StyleSheet.create({
         justifyContent: 'center'
     }
 });
+
+
+const mapStateToProps = (state: IFavoriteState) => {
+    return {
+        favoritesFilm: state.favoritesFilm
+    };
+};
+
+export default connect(mapStateToProps)(Search);
