@@ -7,10 +7,6 @@ import { IFavoriteState } from "../store/reducers/favoriteTypes";
 import FilmItem from "./FilmItem";
 
 
-
-interface IState {
-}
-
 type Props = {
     navigation: NavigationStackProp<void>;
     films: IFilm[];
@@ -20,7 +16,7 @@ type Props = {
     totalPages: number;
 };
 
-class FilmList extends React.Component<Props, IState> {
+class FilmList extends React.Component<Props> {
 
     constructor(props: Props) {
         super(props);
@@ -29,7 +25,7 @@ class FilmList extends React.Component<Props, IState> {
         }
     }
 
-    private _displayDetailForFilm = (idFilm: number) => {
+    private _displayDetailForFilm = (idFilm: number): void => {
         console.log("Display film with id " + idFilm);
         this.props.navigation.navigate(
             "FilmDetail",
@@ -37,19 +33,19 @@ class FilmList extends React.Component<Props, IState> {
     }    
 
     private _isFavorite(film: IFilm): boolean {
-        return this.props.favoritesFilm.findIndex(item => item.id === film?.id) >= 0;
+        return this.props.favoritesFilm.findIndex(item => item.id === film.id) >= 0;
     }
 
-    public render() {
+    public render(): JSX.Element {
         return (
             <FlatList
                 style={styles.list}
                 data={this.props.films}
-                keyExtractor={(item: any) => item.id.toString()}
-                renderItem={({ item }) => <FilmItem film={item} displayDetailForFilm={this._displayDetailForFilm} isFavorite={this._isFavorite(item)} />}
+                keyExtractor={(item: IFilm): string => item.id.toString()}
+                renderItem={({ item }): JSX.Element => <FilmItem film={item} displayDetailForFilm={this._displayDetailForFilm} isFavorite={this._isFavorite(item)} />}
                 extraData={this.props.favoritesFilm}
                 onEndReachedThreshold={0.5}
-                onEndReached={() => {
+                onEndReached={(): void => {
                     if (this.props.page < this.props.totalPages) { // On vérifie qu'on n'a pas atteint la fin de la pagination (totalPages) avant de charger plus d'éléments
                         this.props.loadFilms()
                     }
@@ -67,7 +63,7 @@ const styles = StyleSheet.create({
     }
   })
 
-const mapStateToProps = (state: IFavoriteState) => {
+const mapStateToProps = (state: IFavoriteState): IFavoriteState => {
     return {
         favoritesFilm: state.favoritesFilm
     };

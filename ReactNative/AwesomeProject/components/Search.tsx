@@ -32,7 +32,7 @@ class Search extends React.Component<Props, IState> {
     private page: number;
     private totalPages: number;
 
-    private _searchFilms () {
+    private _searchFilms (): void {
       this.page = 0
       this.totalPages = 0
       this.setState(
@@ -42,7 +42,7 @@ class Search extends React.Component<Props, IState> {
         () => { this._loadFilms() })
     }
 
-    private _loadFilms () {
+    private _loadFilms (): void {
       if (this._searchedText.length > 0) {
         this.setState({ isLoading: true })
         getFilmsFromApiWithSearchedText(this._searchedText, this.page + 1).then(data => {
@@ -56,11 +56,11 @@ class Search extends React.Component<Props, IState> {
       }
     }
 
-    private _searchTextInputChanged (text: string) {
+    private _searchTextInputChanged (text: string): void {
       this._searchedText = text
     }
 
-    _displayLoading () {
+    _displayLoading (): JSX.Element | undefined {
       if (this.state.isLoading) {
         return (
           <View style={styles.loading_container}>
@@ -71,7 +71,7 @@ class Search extends React.Component<Props, IState> {
       }
     }
 
-    render () {
+    render (): JSX.Element {
       console.log('RENDER')
       console.log(this.props)
       return (
@@ -79,14 +79,14 @@ class Search extends React.Component<Props, IState> {
           <TextInput
             style={styles.textinput}
             placeholder='Titre du film'
-            onChangeText={(text) => this._searchTextInputChanged(text)}
-            onSubmitEditing={() => this._searchFilms()}
+            onChangeText={(text): void => this._searchTextInputChanged(text)}
+            onSubmitEditing={(): void => this._searchFilms()}
           />
-          <Button title='Rechercher' onPress={() => { this._searchFilms() }} />
+          <Button title='Rechercher' onPress={(): void => { this._searchFilms() }} />
           <FilmList
             navigation = {this.props.navigation}
             films ={this.state.films}
-            loadFilms={() => this._loadFilms()}
+            loadFilms={(): void => this._loadFilms()}
             page={this.page}
             totalPages={this.totalPages} />
           {this._displayLoading()}
@@ -118,7 +118,7 @@ const styles = StyleSheet.create({
   }
 })
 
-const mapStateToProps = (state: IFavoriteState) => {
+const mapStateToProps = (state: IFavoriteState): IFavoriteState => {
   return {
     favoritesFilm: state.favoritesFilm
   }

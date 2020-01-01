@@ -11,8 +11,9 @@ interface IFilmItemProps {
 }
 
 class FilmItem extends React.Component<IFilmItemProps> {
-  private _displayFavorite () {
+  private _displayFavorite (): JSX.Element | undefined {
     if (this.props.isFavorite) {
+      // eslint-disable-next-line @typescript-eslint/no-var-requires
       const sourceImage = require('../images/ic_favorite.png')
 
       return (
@@ -24,12 +25,12 @@ class FilmItem extends React.Component<IFilmItemProps> {
     }
   }
 
-  render () {
+  render (): JSX.Element {
     const { film, displayDetailForFilm } = this.props
     return (
       <TouchableOpacity
         style={styles.main_container}
-        onPress={() => displayDetailForFilm(film.id)}>
+        onPress={(): void => displayDetailForFilm(film.id)}>
         <Image
           style={styles.image}
           source={{ uri: getImageFromApi(film.poster_path) }}

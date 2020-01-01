@@ -37,7 +37,7 @@ const MoviesTabNavigator = createBottomTabNavigator({
     screen: SearchStackNavigator,
     navigationOptions: {
       // eslint-disable-next-line react/display-name
-      tabBarIcon: () => {
+      tabBarIcon: (): JSX.Element => {
         return <Image
           source={require('../images/ic_search.png')}
           style={styles.icon} />
@@ -48,7 +48,7 @@ const MoviesTabNavigator = createBottomTabNavigator({
     screen: FavoriteStackNavigator,
     navigationOptions: {
       // eslint-disable-next-line react/display-name
-      tabBarIcon: () => {
+      tabBarIcon: (): JSX.Element => {
         return <Image
           source={require('../images/ic_favorite.png')}
           style={styles.icon} />

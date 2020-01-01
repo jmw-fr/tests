@@ -14,13 +14,14 @@ type Props = {
 };
 
 class Favorites extends React.Component<Props> {
-  render () {
+  render (): JSX.Element {
     return (
       <View style={styles.view}>
         <FilmList
           navigation = {this.props.navigation}
           films ={this.props.favoritesFilm}
-          loadFilms={() => {}}
+          // eslint-disable-next-line @typescript-eslint/no-empty-function
+          loadFilms={(): void => {}}
           page={1}
           totalPages={1} />
       </View>
@@ -34,7 +35,7 @@ const styles = StyleSheet.create({
   }
 })
 
-const mapStateToProps = (state: IFavoriteState) => {
+const mapStateToProps = (state: IFavoriteState): IFavoriteState => {
   return {
     favoritesFilm: state.favoritesFilm
   }
