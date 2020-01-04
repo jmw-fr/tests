@@ -1,12 +1,13 @@
 // Components/Favorites.js
 
 import React from 'react'
-import { StyleSheet, View } from 'react-native'
+import { View } from 'react-native'
 import { NavigationStackProp } from 'react-navigation-stack'
 import { IFilm } from '../api/TMDBApi'
 import { connect } from 'react-redux'
 import { IFavoriteState } from '../store/reducers/favoriteTypes'
-import FilmList from './FilmList'
+import FilmList from './FilmList.Component'
+import styles from './Favorites.Styles';
 
 type Props = {
   navigation: NavigationStackProp<void>;
@@ -28,12 +29,6 @@ class Favorites extends React.Component<Props> {
     )
   }
 }
-
-const styles = StyleSheet.create({
-  view: {
-    flex: 1
-  }
-})
 
 const mapStateToProps = (state: IFavoriteState): IFavoriteState => {
   return {

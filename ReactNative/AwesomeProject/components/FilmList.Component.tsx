@@ -1,11 +1,12 @@
 import React from 'react';
-import { StyleSheet, FlatList } from "react-native";
+import { FlatList } from "react-native";
 import { NavigationStackProp } from 'react-navigation-stack';
 import { connect } from "react-redux";
 import { IFilm } from '../api/TMDBApi';
 import { IFavoriteState } from "../store/reducers/favoriteTypes";
-import FilmItem from "./FilmItem";
+import FilmItem from "./FilmItem.Component";
 
+import styles from './FilmList.Styles';
 
 type Props = {
     navigation: NavigationStackProp<void>;
@@ -55,13 +56,6 @@ class FilmList extends React.Component<Props> {
     }
 
 }
-
-
-const styles = StyleSheet.create({
-    list: {
-      flex: 1
-    }
-  })
 
 const mapStateToProps = (state: IFavoriteState): IFavoriteState => {
     return {

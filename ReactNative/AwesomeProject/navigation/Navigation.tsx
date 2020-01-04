@@ -2,11 +2,14 @@ import React from 'react'
 import { createAppContainer } from 'react-navigation'
 import { createStackNavigator } from 'react-navigation-stack'
 import { createBottomTabNavigator } from 'react-navigation-tabs'
-import { StyleSheet, Image } from 'react-native'
+import { Image } from 'react-native'
 
-import Search from '../components/Search'
-import FilmDetail from '../components/FilmDetail'
-import Favorites from '../components/Favorites'
+import Search from '../components/Search.Component'
+import FilmDetail from '../components/FilmDetail.Component'
+import Favorites from '../components/Favorites.Component'
+import Test from '../components/Test.Component'
+
+import styles from './Navigation.Styles';
 
 const SearchStackNavigator = createStackNavigator({
   Search: {
@@ -54,23 +57,19 @@ const MoviesTabNavigator = createBottomTabNavigator({
           style={styles.icon} />
       }
     }
+  },
+  Test: {
+    screen: Test
   }
 },
-{
-  tabBarOptions: {
-    activeBackgroundColor: '#DDDDDD', // Couleur d'arrière-plan de l'onglet sélectionné
-    inactiveBackgroundColor: '#FFFFFF', // Couleur d'arrière-plan des onglets non sélectionnés
-    showLabel: false, // On masque les titres
-    showIcon: true // On informe le TabNavigator qu'on souhaite afficher les icônes définis
+  {
+    tabBarOptions: {
+      activeBackgroundColor: '#DDDDDD', // Couleur d'arrière-plan de l'onglet sélectionné
+      inactiveBackgroundColor: '#FFFFFF', // Couleur d'arrière-plan des onglets non sélectionnés
+      showLabel: false, // On masque les titres
+      showIcon: true // On informe le TabNavigator qu'on souhaite afficher les icônes définis
+    }
   }
-}
 )
-
-const styles = StyleSheet.create({
-  icon: {
-    width: 30,
-    height: 30
-  }
-})
 
 export default createAppContainer(MoviesTabNavigator)

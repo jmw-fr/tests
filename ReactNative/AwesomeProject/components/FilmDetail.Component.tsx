@@ -3,30 +3,33 @@
 import React from 'react'
 import moment from 'moment'
 import numeral from 'numeral'
-import { StyleSheet, View, Text, ActivityIndicator, ScrollView, Image, TouchableOpacity } from 'react-native'
+import { View, Text, ActivityIndicator, ScrollView, Image, TouchableOpacity, Share, Platform } from 'react-native'
 import { NavigationStackProp } from 'react-navigation-stack'
 import { connect } from 'react-redux'
 import { IFilm, getFilmDetailFromApi, getImageFromApi } from '../api/TMDBApi'
 import { IFavoriteState, IToggleFavoriteAction, TOGGLE_FAVORITE } from '../store/reducers/favoriteTypes'
 import { Dispatch } from 'redux'
 
+import styles from './FilmDetail.Styles';
+
 interface INavigationParameters {
-    idFilm: number;
+  idFilm: number;
 }
 
 interface IProps {
-    navigation: NavigationStackProp<INavigationParameters>;
-    dispatch: Dispatch;
-    favoritesFilm: IFilm[];
+  navigation: NavigationStackProp<INavigationParameters>;
+  dispatch: Dispatch;
+  favoritesFilm: IFilm[];
 }
 
 interface IState {
-    film?: IFilm;
-    isLoading: boolean;
+  film?: IFilm;
+  isLoading: boolean;
 }
 
 class FilmDetail extends React.Component<IProps, IState> {
-  constructor (props: IProps) {
+
+  constructor(props: IProps) {
     super(props)
     this.state = {
       film: undefined,
@@ -34,7 +37,31 @@ class FilmDetail extends React.Component<IProps, IState> {
     }
   }
 
-  private _displayLoading (): JSX.Element | undefined {
+  _shareFilm(): void {
+    const { film } = this.state;
+
+    if (film) {
+      Share.share({ title: film.title, message: film.overview });
+    }
+  }
+
+  _displayFloatingActionButton(): JSX.Element | undefined {
+    const { film } = this.state;
+
+    if (film != undefined && Platform.OS === 'android') { // Uniquement sur Android et lorsque le film est chargé
+      return (
+        <TouchableOpacity
+          style={styles.share_touchable_floatingactionbutton}
+          onPress={(): void => this._shareFilm()}>
+          <Image
+            style={styles.share_image}
+            source={require('../images/ic_share.png')} />
+        </TouchableOpacity>
+      )
+    }
+  }
+
+  private _displayLoading(): JSX.Element | undefined {
     if (this.state.isLoading) {
       return (
         <View style={styles.loading_container}>
@@ -44,7 +71,7 @@ class FilmDetail extends React.Component<IProps, IState> {
     }
   }
 
-  private _toggleFavorite (): void {
+  private _toggleFavorite(): void {
     if (this.state.film) {
       const action: IToggleFavoriteAction = {
         type: TOGGLE_FAVORITE,
@@ -54,7 +81,7 @@ class FilmDetail extends React.Component<IProps, IState> {
     }
   }
 
-  private _displayFilm (): JSX.Element | undefined {
+  private _displayFilm(): JSX.Element | undefined {
     const { film } = this.state
 
     if (film !== undefined) {
@@ -88,7 +115,7 @@ class FilmDetail extends React.Component<IProps, IState> {
     }
   }
 
-  _displayFavoriteImage (): JSX.Element {
+  _displayFavoriteImage(): JSX.Element {
     // eslint-disable-next-line @typescript-eslint/no-var-requires
     let sourceImage = require('../images/ic_favorite_border.png')
     if (this.props.favoritesFilm.findIndex(item => this.state.film && item.id === this.state.film.id) !== -1) {
@@ -103,7 +130,7 @@ class FilmDetail extends React.Component<IProps, IState> {
     )
   }
 
-  public componentDidMount (): void {
+  public componentDidMount(): void {
     if (this.props.navigation.state.params) {
       getFilmDetailFromApi(this.props.navigation.state.params.idFilm).then(data => {
         this.setState({
@@ -114,12 +141,12 @@ class FilmDetail extends React.Component<IProps, IState> {
     }
   }
 
-  componentDidUpdate (): void {
+  componentDidUpdate(): void {
     console.log('componentDidUpdate : ')
     console.log(this.props.favoritesFilm)
   }
 
-  public render (): JSX.Element {
+  public render(): JSX.Element {
     console.log('Component FilmDetail rendu')
     console.log(this.props)
 
@@ -127,62 +154,11 @@ class FilmDetail extends React.Component<IProps, IState> {
       <View style={styles.main_container}>
         {this._displayLoading()}
         {this._displayFilm()}
+        {this._displayFloatingActionButton()}
       </View>
     )
   }
 }
-
-const styles = StyleSheet.create({
-  main_container: {
-    flex: 1
-  },
-  loading_container: {
-    position: 'absolute',
-    left: 0,
-    right: 0,
-    top: 0,
-    bottom: 0,
-    alignItems: 'center',
-    justifyContent: 'center'
-  },
-  scrollview_container: {
-    flex: 1
-  },
-  image: {
-    height: 169,
-    margin: 5
-  },
-  title_text: {
-    fontWeight: 'bold',
-    fontSize: 35,
-    flex: 1,
-    flexWrap: 'wrap',
-    marginLeft: 5,
-    marginRight: 5,
-    marginTop: 10,
-    marginBottom: 10,
-    color: '#000000',
-    textAlign: 'center'
-  },
-  description_text: {
-    fontStyle: 'italic',
-    color: '#666666',
-    margin: 5,
-    marginBottom: 15
-  },
-  default_text: {
-    marginLeft: 5,
-    marginRight: 5,
-    marginTop: 5
-  },
-  favorite_container: {
-    alignItems: 'center' // Alignement des components enfants sur l'axe secondaire, X ici
-  },
-  favorite_image: {
-    width: 40,
-    height: 40
-  }
-})
 
 const mapStateToProps = (state: IFavoriteState): IFavoriteState => {
   return {

@@ -1,10 +1,12 @@
 import React from 'react'
-import { StyleSheet, View, TextInput, Button, ActivityIndicator } from 'react-native'
+import { View, TextInput, Button, ActivityIndicator } from 'react-native'
 import { getFilmsFromApiWithSearchedText, IFilm } from '../api/TMDBApi'
 import { NavigationStackProp } from 'react-navigation-stack'
 import { IFavoriteState } from '../store/reducers/favoriteTypes'
 import { connect } from 'react-redux'
-import FilmList from './FilmList'
+import FilmList from './FilmList.Component'
+
+import styles from './Search.Styles';
 
 interface IState {
     films: IFilm[];
@@ -94,29 +96,6 @@ class Search extends React.Component<Props, IState> {
       )
     }
 }
-
-const styles = StyleSheet.create({
-  view: {
-    flex: 1
-  },
-  textinput: {
-    marginLeft: 5,
-    marginRight: 5,
-    height: 50,
-    borderColor: '#000000',
-    borderWidth: 1,
-    paddingLeft: 5
-  },
-  loading_container: {
-    position: 'absolute',
-    left: 0,
-    right: 0,
-    top: 100,
-    bottom: 0,
-    alignItems: 'center',
-    justifyContent: 'center'
-  }
-})
 
 const mapStateToProps = (state: IFavoriteState): IFavoriteState => {
   return {
