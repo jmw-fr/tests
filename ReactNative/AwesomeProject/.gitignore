@@ -10,5 +10,8 @@ npm-debug.*
 web-build/
 web-report/
 
+ios/Pods/**
+ios/build/**
+
 # macOS
 .DS_Store
